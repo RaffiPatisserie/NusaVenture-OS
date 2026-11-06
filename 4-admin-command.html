@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AERO STEP ADMIN — Command Center Inventaris B2B, OAuth & NusaAI Auditor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="nusa-core.js"></script>
+</head>
+<body class="antialiased">
+
+  <!-- 1. BLACK-BOX HEADER -->
+  <div id="headerMount"></div>
+
+  <!-- 2. HERO BANNER ADMIN COMMAND CENTER (AERO STEP LAYOUT) -->
+  <div id="adminHeroMount"></div>
+
+  <main class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- 3. 5-COLUMN MASTER B2B INVENTORY CONTROL & RESTOCK GRID -->
+    <section id="masterInventorySection" class="space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base sm:text-lg font-extrabold uppercase tracking-wider">KONTROL STOK KATALOG MASTER INVENTARIS B2B (5 SKU UTAMA)</h2>
+          <p class="text-xs text-[var(--aero-muted)]">Klik "+ Restock 25 Lot" pada kartu SKU untuk menambah ketersediaan stok rantai pasok B2B secara real-time.</p>
+        </div>
+        <button onclick="NusaCore.resetState()" class="aero-pill-outline px-4 py-2 rounded-full text-xs font-extrabold text-rose-500">
+          Reset Demo Data
+        </button>
+      </div>
+      <div id="adminInventoryCards" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+    </section>
+
+    <!-- 4. MAIN TELEMETRY MATRIX (7 COLS) & NUSAAI FORENSIC CO-PILOT (5 COLS) -->
+    <section id="telemetrySection" class="grid lg:grid-cols-12 gap-6">
+
+      <!-- Left 7 Cols: Mass-Balance Matrix, Escrow Queue, KYB Applications -->
+      <div class="lg:col-span-7 space-y-6">
+
+        <!-- UMKM Telemetry & Mass-Balance Table -->
+        <div class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--aero-border)] pb-3">
+            <div>
+              <span class="text-[10px] font-mono-num uppercase tracking-widest text-[var(--aero-muted)] font-bold">REAL-TIME TELEMETRY MATRIX</span>
+              <h3 class="text-base font-extrabold uppercase">Matriks Mass-Balance, Sertifikasi LMS & Tranche UMKM</h3>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-[var(--aero-border)] text-[var(--aero-muted)] font-mono-num">
+                  <th class="py-2.5 pr-3">MITRA UMKM</th>
+                  <th class="py-2.5 px-3">STATUS LMS</th>
+                  <th class="py-2.5 px-3">MASS-BALANCE</th>
+                  <th class="py-2.5 px-3">CAP 1.6x</th>
+                  <th class="py-2.5 pl-3 text-right">TINDAKAN ADMIN</th>
+                </tr>
+              </thead>
+              <tbody id="admUmkmTable" class="divide-y divide-[var(--aero-border)]"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Dual-Approval Escrow Queue -->
+        <div class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4">
+          <div class="border-b border-[var(--aero-border)] pb-3">
+            <span class="text-[10px] font-mono-num uppercase tracking-widest text-[var(--aero-muted)] font-bold">CO-MANAGEMENT GOVERNANCE</span>
+            <h3 class="text-base font-extrabold uppercase">Otorisasi Pencairan Dual-Approval Escrow ke Supplier</h3>
+          </div>
+          <div id="admEscrowList" class="space-y-3"></div>
+        </div>
+
+        <!-- Bank-Grade KYB Applications -->
+        <div class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4">
+          <div class="border-b border-[var(--aero-border)] pb-3">
+            <span class="text-[10px] font-mono-num uppercase tracking-widest text-[var(--aero-muted)] font-bold">ONBOARDING PIPELINE</span>
+            <h3 class="text-base font-extrabold uppercase">Berkas Pendaftaran KYB Perbankan & Due Diligence</h3>
+          </div>
+          <div id="admAppList" class="space-y-3"></div>
+        </div>
+
+      </div>
+
+      <!-- Right 5 Cols: NusaAI Autonomous Auditor, Field Schedule & OAuth Identity Registry -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <div class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4 border-2 border-[#52584E]/40">
+          <div class="flex items-center gap-3 border-b border-[var(--aero-border)] pb-3">
+            <div class="w-10 h-10 rounded-full aero-btn-olive font-mono-num font-extrabold flex items-center justify-center text-xs">
+              AI
+            </div>
+            <div>
+              <h3 class="text-base font-extrabold uppercase">NusaAI Forensic Auditor & Co-Pilot</h3>
+              <p class="text-[11px] text-[var(--aero-muted)]">Otomatisasi Evaluasi Mass-Balance, Audit HPP & Penjadwalan Staf</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button onclick="runNusaAIAgent('FULL_AUDIT')" class="px-3.5 py-2 rounded-full aero-stone-soft text-xs font-extrabold hover:opacity-80">
+              🔍 Audit Seluruh UMKM
+            </button>
+            <button onclick="runNusaAIAgent('AUTO_SCHEDULE_FIELD')" class="px-3.5 py-2 rounded-full aero-stone-soft text-xs font-extrabold hover:opacity-80">
+              📅 Jadwalkan Staf Lapangan
+            </button>
+            <button onclick="runNusaAIAgent('EXPORT_READINESS')" class="px-3.5 py-2 rounded-full aero-stone-soft text-xs font-extrabold hover:opacity-80">
+              🚢 Kesiapan Kontainer Ekspor
+            </button>
+          </div>
+
+          <div id="aiChatBox" class="aero-stone-soft rounded-[22px] p-4 h-72 overflow-y-auto space-y-3 text-xs font-mono-num leading-relaxed"></div>
+
+          <form onsubmit="handleCustomAIPrompt(event)" class="flex gap-2">
+            <input id="aiCustomInput" type="text" required placeholder="Perintahkan NusaAI: 'Jadwalkan cek lapangan ke Coketa'..." class="flex-1 px-4 py-2.5 rounded-full aero-stone-soft text-xs focus:outline-none" />
+            <button type="submit" class="aero-btn-olive px-5 py-2.5 rounded-full text-xs font-extrabold">Kirim</button>
+          </form>
+        </div>
+
+        <!-- Field Operations Schedule -->
+        <div class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4">
+          <div class="border-b border-[var(--aero-border)] pb-3">
+            <span class="text-[10px] font-mono-num uppercase tracking-widest text-[var(--aero-muted)] font-bold">FIELD OPERATIONS</span>
+            <h3 class="text-base font-extrabold uppercase">Kalender Tugas Audit Fisik Staf Lapangan</h3>
+          </div>
+          <div id="admAuditScheduleList" class="space-y-3 max-h-72 overflow-y-auto"></div>
+        </div>
+
+        <!-- Google OAuth 2.0 & User Identity Registry -->
+        <div id="oauthRegistrySection" class="aero-surface rounded-[30px] p-6 shadow-sm space-y-4">
+          <div class="border-b border-[var(--aero-border)] pb-3">
+            <span class="text-[10px] font-mono-num uppercase tracking-widest text-[var(--aero-muted)] font-bold">GOOGLE OAUTH 2.0 & RBAC REGISTRY</span>
+            <h3 class="text-base font-extrabold uppercase">Database Akun Login Terhimpun (Mitra & Investor)</h3>
+          </div>
+          <div id="admUserList" class="space-y-2.5 max-h-64 overflow-y-auto"></div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <div id="footerMount"></div>
+
+  <script>
+    function appendAIMessage(role, htmlContent) {
+      const box = document.getElementById('aiChatBox');
+      const wrapper = document.createElement('div');
+      wrapper.className = role === 'USER'
+        ? 'p-3 rounded-2xl aero-stone text-xs'
+        : 'p-3.5 rounded-2xl aero-surface border border-[var(--aero-border)] space-y-1.5';
+      wrapper.innerHTML = `<div class="text-[10px] font-extrabold uppercase text-[var(--aero-olive)]">${role === 'USER' ? 'INSTRUKSI ADMIN' : 'LAPORAN NUSAAI AUDITOR'}</div><div>${htmlContent}</div>`;
+      box.appendChild(wrapper);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function handleRestockSKU(itemId) {
+      try {
+        const updated = NusaCore.restockInventoryItem(itemId, 25);
+        renderAdminDashboard();
+        appendAIMessage('AI', `✓ Stok SKU <b>${updated.sku} (${updated.itemName})</b> berhasil ditambah +25 lot. Stok gudang B2B kini: <b>${updated.stock} lot</b>.`);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function renderAdminDashboard() {
+      const state = NusaCore.getState();
+      const alerts = state.umkmList.filter(u => NusaCore.calculateMassBalance(u.massBalance).isAlert);
+
+      document.getElementById('headerMount').innerHTML = NusaBlackBoxUI.renderHeader({
+        brandTitle: 'AERO STEP',
+        brandSub: 'ADMIN COMMAND & AI AUDITOR',
+        navItems: [
+          { label: 'Master Inventaris B2B', href: '#masterInventorySection' },
+          { label: 'Matriks Mass-Balance', href: '#telemetrySection' },
+          { label: 'Database OAuth', href: '#oauthRegistrySection' }
+        ],
+        user: { name: 'Root Co-Manager', role: 'ADMIN' },
+        badgeLabel: 'Alert Aktif',
+        badgeCount: alerts.length,
+        onLoginClick: "NusaCore.openOAuthModal('MITRA')",
+        onBadgeClick: '#telemetrySection'
+      });
+
+      document.getElementById('adminHeroMount').innerHTML = NusaBlackBoxUI.renderHeroBanner({
+        badge: 'PUSAT KOMANDO EKOSISTEM & FORENSIK AI',
+        titleLines: [
+          'KENDALI PENUH',
+          'INVENTARIS B2B,',
+          'ESCROW, & OAUTH'
+        ],
+        subtitle: `Total AUM: ${NusaCore.formatCompactIDR(state.meta.totalAUM)} | Likuiditas Escrow: ${NusaCore.formatCompactIDR(state.meta.escrowLiquidity)} | Akun Terhimpun: ${state.users.length} Pengguna.`,
+        primaryCta: { label: 'Evaluasi AI Sekarang', href: '#telemetrySection' },
+        secondaryCta: { label: 'Kelola SKU B2B', href: '#masterInventorySection' },
+        heroImage: 'https://images.unsplash.com/photo-1553413077-190dd305871c?w=1000&auto=format&fit=crop&q=80',
+        floatingPerks: [
+          { icon: '⚠️', title: `${alerts.length} Alert Mass-Balance`, sub: 'Batas Toleransi Deviasi 3.0%' },
+          { icon: '👥', title: `${state.users.length} Akun OAuth & Mitra`, sub: 'Terhimpun Otomatis di Backend' },
+          { icon: '📋', title: `${state.applications.length} Berkas KYB Bank`, sub: 'Menunggu Survei Lapangan' }
+        ],
+        socialProof: { countText: `${state.auditSchedules.length} Jadwal Audit Staf`, rating: '5.0' }
+      });
+
+      // Master Inventory Cards with Restock Trigger
+      document.getElementById('adminInventoryCards').innerHTML = state.b2bCatalog
+        .map(item =>
+          NusaBlackBoxUI.renderInventoryCard({
+            id: item.id,
+            title: item.itemName,
+            subtitle: `${item.sku} • Pemasok: ${item.supplierName}`,
+            priceFormatted: NusaCore.formatIDR(item.ecosystemCreditPrice),
+            oldPriceFormatted: '',
+            rating: item.rating,
+            unitBadge: `STOK: ${item.stock}`,
+            tag: item.category,
+            tagType: 'NEW',
+            image: item.image,
+            actionLabel: '+ Restock 25',
+            onActionClick: `handleRestockSKU('${item.id}')`
+          })
+        )
+        .join('');
+
+      // Telemetry Table
+      document.getElementById('admUmkmTable').innerHTML = state.umkmList
+        .map(u => {
+          const mb = NusaCore.calculateMassBalance(u.massBalance);
+          const grad = NusaCore.calculateGraduationProgress(u);
+          const lms = NusaCore.getTrainingStatus(u);
+          return `
+          <tr>
+            <td class="py-3 pr-3">
+              <span class="px-2 py-0.5 rounded-full aero-stone font-mono-num font-extrabold text-[10px]">$${u.ticker}</span>
+              <p class="font-extrabold mt-1">${u.name}</p>
+              <p class="text-[11px] text-[var(--aero-muted)]">${u.owner}</p>
+            </td>
+            <td class="py-3 px-3 font-mono-num">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${lms.isCertified ? 'aero-btn-olive' : 'aero-stone'}">
+                ${lms.isCertified ? '✓ LULUS 100%' : `PROGRES ${lms.progressPct}%`}
+              </span>
+            </td>
+            <td class="py-3 px-3 font-mono-num">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${mb.isAlert ? 'bg-rose-500/20 text-rose-500' : 'aero-stone'}">
+                Gap: ${mb.unaccountedGap} (${mb.discrepancyPct}%)
+              </span>
+            </td>
+            <td class="py-3 px-3 font-mono-num font-extrabold">${grad.progressPct}%</td>
+            <td class="py-3 pl-3 text-right space-x-1">
+              <button onclick="scheduleFieldAuditFor('${u.id}')" class="px-3 py-1.5 rounded-full aero-stone-soft text-[11px] font-extrabold">
+                + Audit
+              </button>
+              ${
+                mb.isAlert
+                  ? `<button onclick="reconcileAndUnfreeze('${u.id}')" class="px-3 py-1.5 rounded-full aero-btn-olive text-[11px] font-extrabold">Buka Freeze</button>`
+                  : ''
+              }
+            </td>
+          </tr>
+        `;
+        })
+        .join('');
+
+      // Escrow Queue
+      document.getElementById('admEscrowList').innerHTML = state.escrowRequests
+        .map(
+          req => `
+        <div class="p-4 rounded-2xl aero-stone-soft flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div>
+            <span class="font-mono-num font-extrabold">${req.id}</span> • <b>${req.umkmName}</b>
+            <p class="text-[var(--aero-muted)] mt-0.5">Pemasok: <b>${req.supplierName}</b> — ${req.purpose}</p>
+            <p class="font-mono-num font-extrabold mt-1">${NusaCore.formatIDR(req.amount)}</p>
+          </div>
+          <div>
+            ${
+              req.status === 'PENDING_CO_MANAGER'
+                ? `<button onclick="approveEscrow('${req.id}')" class="aero-btn-olive px-4 py-2 rounded-full text-xs font-extrabold">Setujui & Cairkan →</button>`
+                : `<span class="px-3 py-1 rounded-full aero-stone font-mono-num text-[10px] font-extrabold">${req.status}</span>`
+            }
+          </div>
+        </div>
+      `
+        )
+        .join('');
+
+      // KYB Applications
+      document.getElementById('admAppList').innerHTML = state.applications
+        .map(
+          app => `
+        <div class="p-4 rounded-2xl aero-stone-soft space-y-2 text-xs">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="font-mono-num font-extrabold">${app.id}</span> • <b class="text-sm">${app.businessName}</b>
+              <span class="ml-2 px-2.5 py-0.5 rounded-full aero-stone font-mono-num text-[10px] font-extrabold">Skor KYB: ${app.diagnosticScore}/100</span>
+            </div>
+            <button onclick="scheduleOnboardingSurvey('${app.id}')" class="aero-btn-olive px-4 py-1.5 rounded-full text-[11px] font-extrabold">
+              Jadwalkan Survei Due Diligence
+            </button>
+          </div>
+          <p class="text-[11px] text-[var(--aero-muted)] font-mono-num">
+            Pengurus: ${app.ownerName} (NIK: ${app.ownerNik || '-'}) • NIB: ${app.nibNumber || '-'} • Bank: ${app.bankName || 'Mandiri'} (${app.bankAccountNo || '-'}) • Modal: <b>${NusaCore.formatIDR(app.requestedCapital)}</b>
+          </p>
+        </div>
+      `
+        )
+        .join('');
+
+      // Field Audit Schedule
+      document.getElementById('admAuditScheduleList').innerHTML = state.auditSchedules
+        .map(
+          aud => `
+        <div class="p-3.5 rounded-2xl aero-stone-soft space-y-1 text-xs">
+          <div class="flex justify-between font-mono-num text-[11px] font-extrabold">
+            <span class="${aud.priority === 'CRITICAL' ? 'text-rose-500' : ''}">${aud.priority} • ${aud.id}</span>
+            <span>${aud.scheduledDate}</span>
+          </div>
+          <p class="font-extrabold">${aud.umkmName} — ${aud.auditType}</p>
+          <p class="text-[11px] text-[var(--aero-muted)]">Auditor: ${aud.auditor}</p>
+        </div>
+      `
+        )
+        .join('');
+
+      // Harvested OAuth & Standard Users
+      document.getElementById('admUserList').innerHTML = state.users
+        .map(
+          u => `
+        <div class="p-3 rounded-2xl aero-stone-soft flex items-center justify-between text-xs">
+          <div>
+            <p class="font-extrabold">${u.name} <span class="font-mono-num text-[10px] opacity-75">[${u.role}]</span></p>
+            <p class="font-mono-num text-[11px] text-[var(--aero-muted)]">${u.email} • ${u.authProvider || 'OAUTH'}</p>
+          </div>
+          <div class="text-right font-mono-num text-[10px]">
+            <span class="px-2 py-0.5 rounded-full aero-surface font-bold">${u.kycStatus}</span>
+            <p class="text-[var(--aero-muted)] mt-1">${u.lastLoginAt}</p>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+
+      document.getElementById('footerMount').innerHTML = NusaBlackBoxUI.renderFooter('AERO STEP • ADMIN COMMAND');
+    }
+
+    function approveEscrow(escId) {
+      const state = NusaCore.getState();
+      const req = state.escrowRequests.find(r => r.id === escId);
+      if (!req) return;
+      const umkm = state.umkmList.find(u => u.id === req.umkmId);
+      if (umkm) {
+        umkm.escrowBalance = Math.max(0, umkm.escrowBalance - req.amount);
+        state.meta.escrowLiquidity = Math.max(0, state.meta.escrowLiquidity - req.amount);
+      }
+      req.status = 'APPROVED_DISBURSED';
+      req.coManagerApproved = true;
+      NusaCore.saveState(state);
+      renderAdminDashboard();
+      appendAIMessage('AI', `✓ Pencairan Escrow <b>${req.id}</b> (${NusaCore.formatIDR(req.amount)}) telah ditransfer ke pemasok <b>${req.supplierName}</b>.`);
+    }
+
+    function reconcileAndUnfreeze(umkmId) {
+      const state = NusaCore.getState();
+      const umkm = state.umkmList.find(u => u.id === umkmId);
+      if (!umkm) return;
+      const gap = umkm.massBalance.inputUnits - (umkm.massBalance.posSalesUnits + umkm.massBalance.warehouseStockUnits + umkm.massBalance.verifiedRejectUnits);
+      if (gap > 0) umkm.massBalance.warehouseStockUnits += gap;
+      umkm.trancheFrozen = false;
+      NusaCore.saveState(state);
+      renderAdminDashboard();
+      appendAIMessage('AI', `✓ Rekonsiliasi stok gudang selesai untuk <b>${umkm.name}</b>. Status Tranche kembali AKTIF.`);
+    }
+
+    function scheduleFieldAuditFor(umkmId) {
+      const state = NusaCore.getState();
+      const umkm = state.umkmList.find(u => u.id === umkmId);
+      if (!umkm) return;
+      const mb = NusaCore.calculateMassBalance(umkm.massBalance);
+      state.auditSchedules.unshift({
+        id: `AUD-${Math.floor(700 + Math.random() * 299)}`,
+        umkmId: umkm.id,
+        umkmName: umkm.name,
+        auditor: 'Tim Audit Lapangan Beta (Drajat & Aurio)',
+        auditType: mb.isAlert ? `Investigasi Selisih Mass-Balance (${mb.discrepancyPct}%)` : 'Inspeksi Berkala QC & Kemasan QR',
+        scheduledDate: 'Minggu, 01 Nov 2026 • 09:00 WIB',
+        priority: mb.isAlert ? 'CRITICAL' : 'NORMAL',
+        status: 'TERJADWAL',
+        aiReasoning: 'Verifikasi fisik gudang dan kalibrasi batch kemasan QR.'
+      });
+      NusaCore.saveState(state);
+      renderAdminDashboard();
+      appendAIMessage('AI', `📅 Tugas pengecekan lapangan berhasil dijadwalkan untuk <b>${umkm.name}</b>.`);
+    }
+
+    function scheduleOnboardingSurvey(appId) {
+      const state = NusaCore.getState();
+      const app = state.applications.find(a => a.id === appId);
+      if (!app) return;
+      app.status = 'SURVEI_TERJADWAL';
+      state.auditSchedules.unshift({
+        id: `AUD-${Math.floor(800 + Math.random() * 199)}`,
+        umkmId: app.id,
+        umkmName: app.businessName,
+        auditor: 'Tim Due Diligence Onboarding (Lanang & Pekik)',
+        auditType: `Verifikasi KYB Calon Mitra (Skor ${app.diagnosticScore}/100)`,
+        scheduledDate: 'Senin, 02 Nov 2026 • 10:00 WIB',
+        priority: 'HIGH',
+        status: 'TERJADWAL',
+        aiReasoning: `Inspeksi pabrik dan keabsahan NIB ${app.nibNumber || '-'} di ${app.location}.`
+      });
+      NusaCore.saveState(state);
+      renderAdminDashboard();
+      appendAIMessage('AI', `📅 Survei Due Diligence untuk <b>${app.businessName}</b> berhasil dimasukkan ke kalender staf.`);
+    }
+
+    function runNusaAIAgent(mode, customText = '') {
+      const state = NusaCore.getState();
+      if (mode === 'FULL_AUDIT') {
+        const summary = state.umkmList
+          .map(u => {
+            const mb = NusaCore.calculateMassBalance(u.massBalance);
+            const lms = NusaCore.getTrainingStatus(u);
+            return `• <b>${u.name}</b>: Gap <b>${mb.discrepancyPct}%</b> | LMS: <b>${lms.isCertified ? 'LULUS' : lms.progressPct + '%'}</b> → ${mb.isAlert ? '[FREEZE]' : '[AMAN]'}`;
+          })
+          .join('<br/>');
+        appendAIMessage('AI', `<b>Hasil Audit Forensik Seluruh Portofolio:</b><br/>${summary}`);
+      } else if (mode === 'AUTO_SCHEDULE_FIELD') {
+        state.umkmList.forEach(u => {
+          if (NusaCore.calculateMassBalance(u.massBalance).isAlert) scheduleFieldAuditFor(u.id);
+        });
+      } else if (mode === 'EXPORT_READINESS') {
+        const totalPacks = state.umkmList.reduce((acc, u) => acc + (u.exportMOQContribution || 0), 0);
+        appendAIMessage('AI', `<b>Kesiapan Kontainer Ekspor Kolektif:</b> ${totalPacks.toLocaleString('id-ID')} / 25.000 Pack (DP Buyer: ${NusaCore.formatIDR(state.meta.exportPoolDP)}).`);
+      } else if (mode === 'CUSTOM') {
+        appendAIMessage('USER', customText);
+        const matched = state.umkmList.find(u => customText.toLowerCase().includes(u.name.toLowerCase().split(' ')[0])) || state.umkmList[2];
+        scheduleFieldAuditFor(matched.id);
+      }
+    }
+
+    function handleCustomAIPrompt(e) {
+      e.preventDefault();
+      const inp = document.getElementById('aiCustomInput');
+      const text = inp.value.trim();
+      if (!text) return;
+      inp.value = '';
+      runNusaAIAgent('CUSTOM', text);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      NusaCore.applyTheme('light');
+      renderAdminDashboard();
+      runNusaAIAgent('FULL_AUDIT');
+      NusaCore.onUpdate(() => renderAdminDashboard());
+    });
+  </script>
+</body>
+</html>

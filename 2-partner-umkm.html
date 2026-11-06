@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AERO STEP PARTNER — Manajemen Inventaris B2B, POS & Akademi UMKM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="nusa-core.js"></script>
+</head>
+<body class="antialiased">
+
+  <!-- 1. BLACK-BOX HEADER -->
+  <div id="headerMount"></div>
+
+  <!-- AUTH GATE (GOOGLE OAUTH 2.0 + CREDENTIAL LOGIN) -->
+  <section id="mitraAuthGate" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="aero-hero-canvas rounded-[36px] p-6 sm:p-12 grid lg:grid-cols-12 gap-8 items-center border border-[var(--aero-border)]">
+      <div class="lg:col-span-6 space-y-5">
+        <span class="px-4 py-1.5 rounded-full bg-white/80 dark:bg-black/40 text-[11px] font-extrabold uppercase tracking-wider">
+          PORTAL INVENTARIS & POS MITRA UMKM
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-[1.08]">
+          KELOLA STOK B2B,<br/>AUDIT POS QR, &<br/>PENCAIRAN ESCROW
+        </h1>
+        <p class="text-sm text-[var(--aero-muted)] leading-relaxed max-w-lg">
+          Masuk menggunakan akun Google OAuth 2.0 atau akun kemitraan Anda untuk mengakses pengadaan bahan baku B2B hemat 30% HPP, sertifikasi NusaAcademy, dan pencairan modal kerja.
+        </p>
+        <div class="flex flex-wrap gap-3 pt-1">
+          <button onclick="NusaCore.openOAuthModal('MITRA', () => checkMitraSession())" class="aero-btn-olive px-6 py-3.5 rounded-full text-xs sm:text-sm font-extrabold flex items-center gap-3 shadow-sm">
+            <span>G</span>
+            <span>Login Instan dengan Google OAuth 2.0 →</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6">
+        <div class="aero-surface rounded-[30px] p-6 sm:p-8 shadow-sm space-y-5">
+          <div class="flex items-center justify-between border-b border-[var(--aero-border)] pb-3">
+            <h2 class="text-base font-extrabold uppercase">Masuk Akun Operasional Mitra</h2>
+            <span class="text-[11px] font-mono-num text-[var(--aero-muted)]">RBAC: ROLE_MITRA</span>
+          </div>
+
+          <form onsubmit="handleMitraLogin(event)" class="space-y-4">
+            <input id="loginEmail" type="email" required value="hendra@rotiwarisan.id" placeholder="Email Mitra" class="w-full px-4 py-3 rounded-full aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="loginPassword" type="password" required value="password123" placeholder="Kata Sandi" class="w-full px-4 py-3 rounded-full aero-stone-soft text-xs font-medium focus:outline-none" />
+            <button type="submit" class="w-full py-3.5 rounded-full aero-btn-olive text-xs font-extrabold">
+              Masuk ke Workspace Inventaris Mitra →
+            </button>
+          </form>
+
+          <div class="pt-3 border-t border-[var(--aero-border)] space-y-2">
+            <p class="text-[11px] font-bold text-[var(--aero-muted)]">Pilih Akun Demo Cepat:</p>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="quickSwitchDemo('hendra@rotiwarisan.id')" class="px-3 py-1.5 rounded-full aero-stone-soft text-[11px] font-bold">Roti Warisan (Belum Lulus LMS)</button>
+              <button onclick="quickSwitchDemo('damar@kopimerapi.id')" class="px-3 py-1.5 rounded-full aero-stone-soft text-[11px] font-bold">Kopi Merapi (Lulus LMS 100%)</button>
+              <button onclick="quickSwitchDemo('rizal@coketa.id')" class="px-3 py-1.5 rounded-full aero-stone-soft text-[11px] font-bold text-rose-500">Coketa (Frozen Gap >3%)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTECTED PARTNER INVENTORY WORKSPACE -->
+  <div id="mitraProtectedApp" class="hidden space-y-6">
+
+    <!-- 2. HERO BANNER MITRA (AERO STEP LAYOUT) -->
+    <div id="partnerHeroMount"></div>
+
+    <!-- Partner Selector & Freeze Alert Strip -->
+    <section class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <div class="aero-surface rounded-[24px] p-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
+        <div class="flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+          <span id="loggedUserBanner" class="text-xs font-extrabold"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-[var(--aero-muted)]">Entitas Gudang UMKM:</label>
+          <select id="activeUmkmSelect" onchange="renderPartnerDashboard()" class="px-4 py-2 rounded-full aero-stone-soft text-xs font-extrabold focus:outline-none"></select>
+        </div>
+      </div>
+
+      <div id="freezeAlertBox" class="hidden p-5 rounded-[26px] bg-rose-950 text-white border border-rose-500 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span class="px-3 py-0.5 rounded-full bg-rose-500 text-[10px] font-extrabold uppercase">FRAUD ALERT MASS-BALANCE (>3.0% GAP)</span>
+          <h3 class="text-base font-extrabold mt-1">Pencairan Tranche & Pemesanan Inventaris B2B Dibekukan Sementara</h3>
+          <p id="freezeAlertDesc" class="text-xs text-rose-200 mt-0.5"></p>
+        </div>
+        <span class="px-4 py-2 rounded-full bg-white/10 font-mono-num text-xs font-bold">MENUNGGU REKONSILIASI AUDIT</span>
+      </div>
+    </section>
+
+    <!-- 3. SEARCH & CATEGORY FILTER BAR FOR B2B PROCUREMENT -->
+    <div id="partnerSearchMount"></div>
+
+    <!-- 4. 5-COLUMN B2B INVENTORY PROCUREMENT GRID -->
+    <section id="b2bCatalogSection" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base sm:text-lg font-extrabold uppercase tracking-wider">KATALOG PENGADAAN INVENTARIS B2B (POTONG HPP 15%–30%)</h2>
+        <span id="b2bBalancePill" class="px-4 py-1.5 rounded-full aero-stone text-xs font-mono-num font-extrabold"></span>
+      </div>
+      <div id="partnerCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+    </section>
+
+    <!-- 5. NUSA ACADEMY LMS (3 MODULES REQUIRED TO UNLOCK CAPITAL REQUEST) -->
+    <section id="akademi" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="aero-surface rounded-[32px] p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--aero-border)] pb-4">
+          <div>
+            <span class="px-3.5 py-1 rounded-full aero-stone text-[10px] font-extrabold uppercase tracking-wider">
+              Syarat Mutlak Pencairan Modal Kerja (Gated LMS)
+            </span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight mt-2">
+              NUSA ACADEMY: Pelatihan Dasar Adaptasi Pasar & Standarisasi Inventaris
+            </h2>
+          </div>
+          <div class="text-right">
+            <span id="lmsStatusBadge" class="px-4 py-2 rounded-full font-mono-num text-xs font-extrabold"></span>
+            <p id="lmsProgressLabel" class="text-[11px] text-[var(--aero-muted)] font-mono-num mt-1.5"></p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="aero-stone-soft rounded-[24px] p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono-num font-bold mb-2">
+                <span>MODUL 01</span>
+                <span id="mod1Check"></span>
+              </div>
+              <h3 class="text-sm font-extrabold uppercase">Restrukturisasi HPP & Ring-Fencing Kas</h3>
+              <p class="text-xs text-[var(--aero-muted)] mt-1.5 leading-relaxed">
+                Pemisahan rekening keluarga dari kas usaha dan strategi memangkas HPP 25% lewat pengadaan B2B kolektif.
+              </p>
+            </div>
+            <button onclick="handleCompleteModule('mod1_hpp_ringfencing')" class="aero-btn-olive w-full py-2.5 rounded-full text-xs font-bold">
+              Selesaikan Modul 01 →
+            </button>
+          </div>
+
+          <div class="aero-stone-soft rounded-[24px] p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono-num font-bold mb-2">
+                <span>MODUL 02</span>
+                <span id="mod2Check"></span>
+              </div>
+              <h3 class="text-sm font-extrabold uppercase">Standar QC Kemasan QR & Audit Mass-Balance</h3>
+              <p class="text-xs text-[var(--aero-muted)] mt-1.5 leading-relaxed">
+                Pencatatan presisi antara unit bahan baku masuk, penjualan kasir POS, dan stok fisik gudang (toleransi gap maks 3.0%).
+              </p>
+            </div>
+            <button onclick="handleCompleteModule('mod2_qc_massbalance')" class="aero-btn-olive w-full py-2.5 rounded-full text-xs font-bold">
+              Selesaikan Modul 02 →
+            </button>
+          </div>
+
+          <div class="aero-stone-soft rounded-[24px] p-5 flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-mono-num font-bold mb-2">
+                <span>MODUL 03</span>
+                <span id="mod3Check"></span>
+              </div>
+              <h3 class="text-sm font-extrabold uppercase">Penetrasi Pasar Modern & Agregasi Ekspor</h3>
+              <p class="text-xs text-[var(--aero-muted)] mt-1.5 leading-relaxed">
+                Standarisasi mutu produk untuk pasar internasional dan pembiayaan produksi menggunakan 50% DP Buyer (OPM).
+              </p>
+            </div>
+            <button onclick="handleCompleteModule('mod3_market_export')" class="aero-btn-olive w-full py-2.5 rounded-full text-xs font-bold">
+              Selesaikan Modul 03 →
+            </button>
+          </div>
+        </div>
+
+        <div class="aero-stone rounded-[24px] p-5 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-extrabold uppercase">Kuis Sertifikasi Kesiapan Pasar & Pembuka Kunci Escrow</p>
+            <p class="text-xs text-[var(--aero-muted)] mt-0.5">
+              Validasi pemahaman: Batas maksimal deviasi Mass-Balance adalah 3.0% dan dana Escrow ditransfer langsung ke pemasok resmi.
+            </p>
+          </div>
+          <button onclick="handlePassAllTrainingQuiz()" class="aero-btn-olive px-6 py-3 rounded-full text-xs font-extrabold">
+            ✓ Selesaikan Kuis (Skor 100) & Buka Kunci Modal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. POS MASS-BALANCE RECONCILIATION & GATED ESCROW REQUEST (2-COL BENTO) -->
+    <section id="posEscrowSection" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="grid lg:grid-cols-12 gap-6">
+
+        <!-- Left 6 Cols: Mass-Balance Inventory & POS Telemetry -->
+        <div class="lg:col-span-6 aero-surface rounded-[32px] p-6 sm:p-8 shadow-sm space-y-5">
+          <div class="flex items-center justify-between border-b border-[var(--aero-border)] pb-4">
+            <div>
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-[var(--aero-muted)]">TELEMETRI GUDANG & KASIR</span>
+              <h3 class="text-lg font-extrabold uppercase mt-0.5">Rekonsiliasi Stok Mass-Balance POS</h3>
+            </div>
+            <span id="mbBadge" class="px-3.5 py-1 rounded-full text-xs font-mono-num font-extrabold"></span>
+          </div>
+
+          <form onsubmit="handleSavePOSAndMassBalance(event)" class="space-y-4">
+            <div class="grid sm:grid-cols-2 gap-3.5">
+              <div class="p-3.5 rounded-2xl aero-stone-soft">
+                <label class="block text-[11px] font-bold text-[var(--aero-muted)] mb-1">Unit Bahan Baku Masuk</label>
+                <input id="inpUnits" type="number" required class="w-full bg-transparent font-mono-num font-extrabold text-base focus:outline-none" />
+              </div>
+              <div class="p-3.5 rounded-2xl aero-stone-soft">
+                <label class="block text-[11px] font-bold text-[var(--aero-muted)] mb-1">Unit Terjual POS Kasir</label>
+                <input id="inpPOS" type="number" required class="w-full bg-transparent font-mono-num font-extrabold text-base focus:outline-none" />
+              </div>
+              <div class="p-3.5 rounded-2xl aero-stone-soft">
+                <label class="block text-[11px] font-bold text-[var(--aero-muted)] mb-1">Stok Fisik Gudang Saat Ini</label>
+                <input id="inpStock" type="number" required class="w-full bg-transparent font-mono-num font-extrabold text-base focus:outline-none" />
+              </div>
+              <div class="p-3.5 rounded-2xl aero-stone-soft">
+                <label class="block text-[11px] font-bold text-[var(--aero-muted)] mb-1">Unit Rusak / Reject Terverifikasi</label>
+                <input id="inpReject" type="number" required class="w-full bg-transparent font-mono-num font-extrabold text-base focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl aero-stone">
+              <label class="block text-xs font-bold mb-1">Tambahan Omzet Penjualan Hari Ini (Rp)</label>
+              <input id="inpAddedRevenue" type="number" value="0" step="500000" class="w-full px-4 py-2.5 rounded-full aero-surface font-mono-num font-extrabold text-sm focus:outline-none" />
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+              <button type="button" onclick="simulateAnomalyDemo()" class="px-4 py-2.5 rounded-full border border-rose-500/40 text-rose-500 text-xs font-bold">
+                Simulasikan Selisih >3%
+              </button>
+              <button type="submit" class="aero-btn-olive px-6 py-3 rounded-full text-xs font-extrabold">
+                Simpan Rekonsiliasi Inventaris →
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Right 6 Cols: Gated Dual-Approval Escrow Disbursement -->
+        <div class="lg:col-span-6 relative aero-surface rounded-[32px] p-6 sm:p-8 shadow-sm space-y-5 overflow-hidden">
+          <!-- Lock Overlay When Training Incomplete -->
+          <div id="escrowLockOverlay" class="hidden absolute inset-0 bg-[#1C1E1B]/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-6 text-center text-white">
+            <div class="w-12 h-12 rounded-full bg-white/15 flex items-center justify-center text-xl mb-3">🔒</div>
+            <h4 class="text-lg font-extrabold uppercase">Pengajuan Modal Kerja Terkunci</h4>
+            <p class="text-xs text-gray-300 max-w-md mt-1 leading-relaxed">
+              Selesaikan 3 Modul Pelatihan Dasar pada <b>NusaAcademy</b> di atas untuk membuka fasilitas pencairan Dual-Approval Escrow.
+            </p>
+            <button onclick="handlePassAllTrainingQuiz()" class="mt-4 px-6 py-3 rounded-full bg-white text-[#1C1E1B] font-extrabold text-xs">
+              Luluskan Sertifikasi Sekarang →
+            </button>
+          </div>
+
+          <div class="border-b border-[var(--aero-border)] pb-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-[var(--aero-muted)]">CO-MANAGEMENT ESCROW</span>
+            <h3 class="text-lg font-extrabold uppercase mt-0.5">Pengajuan Pencairan Modal ke Pemasok</h3>
+          </div>
+
+          <form onsubmit="handleEscrowRequest(event)" class="space-y-4">
+            <input id="escSupplier" type="text" required placeholder="Nama Pemasok Bahan Baku / Mesin Terverifikasi *" class="w-full px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="escAmount" type="number" required value="18000000" step="1000000" placeholder="Nominal Pencairan Escrow (Rp) *" class="w-full px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num font-extrabold focus:outline-none" />
+            <input id="escPurpose" type="text" required placeholder="Tujuan Milestone Pengadaan Inventaris *" class="w-full px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <button type="submit" class="w-full py-3.5 rounded-full aero-btn-olive text-xs font-extrabold">
+              Ajukan Pencairan Dual-Approval Escrow →
+            </button>
+          </form>
+
+          <div class="pt-3 border-t border-[var(--aero-border)] space-y-2">
+            <p class="text-[11px] font-extrabold uppercase text-[var(--aero-muted)]">Riwayat Pesanan B2B Terakhir:</p>
+            <div id="b2bTxHistory" class="space-y-2 max-h-40 overflow-y-auto"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Toast -->
+  <div id="partnerToast" class="fixed bottom-5 right-5 hidden max-w-md aero-btn-olive px-5 py-4 rounded-2xl shadow-xl z-50">
+    <p id="partnerToastText" class="text-xs font-bold"></p>
+  </div>
+
+  <!-- Footer -->
+  <div id="footerMount"></div>
+
+  <script>
+    let currentUmkmId = 'UMKM-001';
+    let partnerCategory = 'ALL';
+    let partnerQuery = '';
+
+    function showToast(msg) {
+      const t = document.getElementById('partnerToast');
+      document.getElementById('partnerToastText').textContent = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 4000);
+    }
+
+    function quickSwitchDemo(email) {
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPassword').value = 'password123';
+    }
+
+    function handleMitraLogin(e) {
+      e.preventDefault();
+      try {
+        const user = NusaCore.loginUser(
+          document.getElementById('loginEmail').value,
+          document.getElementById('loginPassword').value,
+          'MITRA'
+        );
+        if (user.entityId) currentUmkmId = user.entityId;
+        checkMitraSession();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function checkMitraSession() {
+      const session = NusaCore.getSession('MITRA') || NusaCore.getSession('ACTIVE_USER');
+      const gate = document.getElementById('mitraAuthGate');
+      const app = document.getElementById('mitraProtectedApp');
+
+      renderHeaderBar(session);
+      if (session) {
+        gate.classList.add('hidden');
+        app.classList.remove('hidden');
+        if (session.entityId) currentUmkmId = session.entityId;
+        populateSelector(NusaCore.getState());
+        renderPartnerDashboard();
+      } else {
+        gate.classList.remove('hidden');
+        app.classList.add('hidden');
+      }
+      document.getElementById('footerMount').innerHTML = NusaBlackBoxUI.renderFooter('AERO STEP • PARTNER B2B');
+    }
+
+    function renderHeaderBar(session) {
+      const state = NusaCore.getState();
+      document.getElementById('headerMount').innerHTML = NusaBlackBoxUI.renderHeader({
+        brandTitle: 'AERO STEP',
+        brandSub: 'PARTNER INVENTORY OS',
+        navItems: [
+          { label: 'Katalog Pengadaan B2B', href: '#b2bCatalogSection' },
+          { label: 'NusaAcademy LMS', href: '#akademi' },
+          { label: 'Rekonsiliasi POS', href: '#posEscrowSection' }
+        ],
+        user: session,
+        badgeLabel: 'Transaksi B2B',
+        badgeCount: state.b2bTransactions.length,
+        onLoginClick: "NusaCore.openOAuthModal('MITRA', () => checkMitraSession())",
+        onBadgeClick: '#b2bCatalogSection'
+      });
+    }
+
+    function populateSelector(state) {
+      const sel = document.getElementById('activeUmkmSelect');
+      sel.innerHTML = state.umkmList
+        .map(u => `<option value="${u.id}" ${u.id === currentUmkmId ? 'selected' : ''}>${u.name} ($${u.ticker})</option>`)
+        .join('');
+    }
+
+    function handlePartnerCategory(catId) {
+      partnerCategory = catId;
+      renderPartnerDashboard();
+    }
+
+    function handlePartnerSearch() {
+      const el = document.getElementById('partnerSearchInput');
+      partnerQuery = el ? el.value.trim().toLowerCase() : '';
+      renderPartnerCatalogGrid();
+    }
+
+    function renderPartnerCatalogGrid() {
+      const state = NusaCore.getState();
+      const umkm = state.umkmList.find(u => u.id === currentUmkmId) || state.umkmList[0];
+
+      const items = state.b2bCatalog.filter(item => {
+        const matchCat = partnerCategory === 'ALL' || item.categoryCode === partnerCategory;
+        const matchQ =
+          !partnerQuery ||
+          item.itemName.toLowerCase().includes(partnerQuery) ||
+          item.supplierName.toLowerCase().includes(partnerQuery);
+        return matchCat && matchQ;
+      });
+
+      document.getElementById('partnerCatalogGrid').innerHTML = items
+        .map(item => {
+          const isSelf = item.supplierId === umkm.id;
+          return NusaBlackBoxUI.renderInventoryCard({
+            id: item.id,
+            title: item.itemName,
+            subtitle: `${item.supplierName} • Stok: ${item.stock}`,
+            priceFormatted: NusaCore.formatIDR(item.ecosystemCreditPrice),
+            oldPriceFormatted: NusaCore.formatIDR(item.marketPrice),
+            rating: item.rating,
+            unitBadge: item.unitBadge,
+            tag: isSelf ? 'PRODUK ANDA' : item.tag,
+            tagType: item.tagType,
+            image: item.image,
+            actionLabel: isSelf ? 'Stok Sendiri' : 'Beli B2B',
+            onActionClick: isSelf ? '' : `orderB2BItem('${item.id}')`
+          });
+        })
+        .join('');
+    }
+
+    function renderPartnerDashboard() {
+      const state = NusaCore.getState();
+      const session = NusaCore.getSession('MITRA') || NusaCore.getSession('ACTIVE_USER');
+      renderHeaderBar(session);
+
+      const sel = document.getElementById('activeUmkmSelect');
+      if (sel && sel.value) currentUmkmId = sel.value;
+
+      const umkm = state.umkmList.find(u => u.id === currentUmkmId) || state.umkmList[0];
+      const mb = NusaCore.calculateMassBalance(umkm.massBalance);
+      const grad = NusaCore.calculateGraduationProgress(umkm);
+      const lms = NusaCore.getTrainingStatus(umkm);
+
+      document.getElementById('loggedUserBanner').textContent =
+        `Sesi OAuth Aktif: ${session ? session.name : umkm.owner} • ${umkm.name} (${umkm.stage})`;
+
+      document.getElementById('partnerHeroMount').innerHTML = NusaBlackBoxUI.renderHeroBanner({
+        badge: `DASHBOARD INVENTARIS MITRA • $${umkm.ticker}`,
+        titleLines: [
+          umkm.name.toUpperCase(),
+          `EFISIENSI HPP -${umkm.hppReductionPct}%`,
+          `MENUJU CAP 1.6X (${grad.progressPct}%)`
+        ],
+        subtitle: `Saldo Dual-Approval Escrow: ${NusaCore.formatIDR(umkm.escrowBalance)} | Saldo B2B Credit: ${NusaCore.formatIDR(umkm.b2bCreditBalance)}.`,
+        primaryCta: { label: 'Pesan Bahan Baku B2B', href: '#b2bCatalogSection' },
+        secondaryCta: { label: 'Buka NusaAcademy', href: '#akademi' },
+        heroImage: umkm.image,
+        floatingPerks: [
+          { icon: '💳', title: 'Saldo Escrow Aktif', sub: NusaCore.formatIDR(umkm.escrowBalance) },
+          { icon: '🔄', title: 'Saldo B2B Credit', sub: NusaCore.formatIDR(umkm.b2bCreditBalance) },
+          { icon: '📊', title: 'Omzet Bulanan', sub: NusaCore.formatIDR(umkm.monthlyRevenue) }
+        ],
+        socialProof: { countText: `Gap Mass-Balance: ${mb.discrepancyPct}%`, rating: lms.isCertified ? '5.0' : '4.7' }
+      });
+
+      document.getElementById('partnerSearchMount').innerHTML = NusaBlackBoxUI.renderSearchAndCategoryBar({
+        searchId: 'partnerSearchInput',
+        onSearchInput: 'handlePartnerSearch()',
+        activeCategory: partnerCategory,
+        onCategoryClick: 'handlePartnerCategory'
+      });
+
+      document.getElementById('b2bBalancePill').textContent = `Saldo B2B Credit Anda: ${NusaCore.formatIDR(umkm.b2bCreditBalance)}`;
+      renderPartnerCatalogGrid();
+
+      // Freeze Alert
+      const freezeBox = document.getElementById('freezeAlertBox');
+      if (mb.isAlert) {
+        freezeBox.classList.remove('hidden');
+        document.getElementById('freezeAlertDesc').textContent =
+          `Selisih ${mb.unaccountedGap} unit (${mb.discrepancyPct}% > 3.0%) antara input bahan baku dan POS + Gudang.`;
+      } else {
+        freezeBox.classList.add('hidden');
+      }
+
+      // LMS Status
+      document.getElementById('mod1Check').innerHTML = lms.mod1_hpp_ringfencing ? '✓ Selesai' : 'Belum';
+      document.getElementById('mod2Check').innerHTML = lms.mod2_qc_massbalance ? '✓ Selesai' : 'Belum';
+      document.getElementById('mod3Check').innerHTML = lms.mod3_market_export ? '✓ Selesai' : 'Belum';
+
+      const lmsBadge = document.getElementById('lmsStatusBadge');
+      const lockOverlay = document.getElementById('escrowLockOverlay');
+      if (lms.isCertified) {
+        lmsBadge.textContent = '✓ TERSERTIFIKASI (MODAL TERBUKA)';
+        lmsBadge.className = 'px-4 py-2 rounded-full font-mono-num text-xs font-extrabold aero-btn-olive';
+        lockOverlay.classList.add('hidden');
+      } else {
+        lmsBadge.textContent = `🔒 WAJIB PELATIHAN (${lms.progressPct}%)`;
+        lmsBadge.className = 'px-4 py-2 rounded-full font-mono-num text-xs font-extrabold aero-stone';
+        lockOverlay.classList.remove('hidden');
+      }
+      document.getElementById('lmsProgressLabel').textContent = `${lms.completedCount}/3 Modul Selesai • Skor Kuis: ${lms.quizScore}/100`;
+
+      // POS Mass Balance Form
+      document.getElementById('inpUnits').value = umkm.massBalance.inputUnits;
+      document.getElementById('inpPOS').value = umkm.massBalance.posSalesUnits;
+      document.getElementById('inpStock').value = umkm.massBalance.warehouseStockUnits;
+      document.getElementById('inpReject').value = umkm.massBalance.verifiedRejectUnits;
+
+      const mbBadge = document.getElementById('mbBadge');
+      mbBadge.textContent = `${mb.statusLabel} (${mb.discrepancyPct}%)`;
+      mbBadge.className = mb.isAlert
+        ? 'px-3.5 py-1 rounded-full text-xs font-mono-num font-extrabold bg-rose-500/20 text-rose-500'
+        : 'px-3.5 py-1 rounded-full text-xs font-mono-num font-extrabold aero-stone';
+
+      // B2B History
+      document.getElementById('b2bTxHistory').innerHTML = state.b2bTransactions
+        .map(
+          tx => `
+        <div class="p-3 rounded-2xl aero-stone-soft flex items-center justify-between text-xs">
+          <div>
+            <p class="font-bold">${tx.buyerName} → ${tx.sellerName}</p>
+            <p class="text-[11px] text-[var(--aero-muted)]">${tx.item}</p>
+          </div>
+          <div class="text-right font-mono-num">
+            <p class="font-extrabold">${NusaCore.formatIDR(tx.creditAmount)}</p>
+            <p class="text-[10px] text-emerald-600 font-bold">Hemat ${NusaCore.formatIDR(tx.savedAmount)}</p>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+    }
+
+    function handleCompleteModule(modKey) {
+      const status = NusaCore.completeTrainingModule(currentUmkmId, modKey, 95);
+      renderPartnerDashboard();
+      showToast(`Progres NusaAcademy: ${status.progressPct}% selesai.`);
+    }
+
+    function handlePassAllTrainingQuiz() {
+      NusaCore.completeTrainingModule(currentUmkmId, 'ALL_WITH_QUIZ', 100);
+      renderPartnerDashboard();
+      showToast('Sertifikasi Lulus 100%! Kunci Pengajuan Pencairan Escrow telah dibuka.');
+    }
+
+    function orderB2BItem(catalogId) {
+      try {
+        const res = NusaCore.executeB2BOrder(currentUmkmId, catalogId, 1);
+        renderPartnerDashboard();
+        showToast(`Pengadaan ${res.item.itemName} berhasil! Anda menghemat ${NusaCore.formatIDR(res.totalSaved)} HPP.`);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function handleSavePOSAndMassBalance(e) {
+      e.preventDefault();
+      const res = NusaCore.updatePOSAndMassBalance(currentUmkmId, {
+        inputUnits: document.getElementById('inpUnits').value,
+        posSalesUnits: document.getElementById('inpPOS').value,
+        warehouseStockUnits: document.getElementById('inpStock').value,
+        verifiedRejectUnits: document.getElementById('inpReject').value,
+        addedRevenue: document.getElementById('inpAddedRevenue').value
+      });
+      document.getElementById('inpAddedRevenue').value = 0;
+      renderPartnerDashboard();
+      showToast(`Rekonsiliasi Mass-Balance (${res.mbResult.discrepancyPct}% gap) berhasil disimpan!`);
+    }
+
+    function simulateAnomalyDemo() {
+      const inp = Number(document.getElementById('inpUnits').value) || 10000;
+      document.getElementById('inpPOS').value = Math.round(inp * 0.8);
+      document.getElementById('inpStock').value = Math.round(inp * 0.1);
+      document.getElementById('inpReject').value = Math.round(inp * 0.02);
+      showToast('Simulasi deviasi 8.0% (>3% batas) dimasukkan. Klik Simpan Rekonsiliasi untuk menguji pembekuan!');
+    }
+
+    function handleEscrowRequest(e) {
+      e.preventDefault();
+      try {
+        const req = NusaCore.submitEscrowRequest(
+          currentUmkmId,
+          document.getElementById('escSupplier').value,
+          document.getElementById('escPurpose').value,
+          document.getElementById('escAmount').value
+        );
+        e.target.reset();
+        showToast(`Permintaan Escrow ${req.id} terkirim ke Co-Manager Admin!`);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      NusaCore.applyTheme('light');
+      checkMitraSession();
+      NusaCore.onUpdate(() => {
+        if (NusaCore.getSession('MITRA') || NusaCore.getSession('ACTIVE_USER')) {
+          populateSelector(NusaCore.getState());
+          renderPartnerDashboard();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

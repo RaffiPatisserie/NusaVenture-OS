@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AERO STEP INVEST — Terminal Likuiditas Inventaris & Tranche UMKM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="nusa-core.js"></script>
+</head>
+<body class="antialiased">
+
+  <!-- 1. BLACK-BOX HEADER -->
+  <div id="headerMount"></div>
+
+  <!-- INVESTOR GOOGLE OAUTH 2.0 GATE -->
+  <section id="investorAuthGate" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="aero-hero-canvas rounded-[36px] p-6 sm:p-12 grid lg:grid-cols-12 gap-8 items-center border border-[var(--aero-border)]">
+      <div class="lg:col-span-6 space-y-5">
+        <span class="px-4 py-1.5 rounded-full bg-white/80 dark:bg-black/40 text-[11px] font-extrabold uppercase tracking-wider">
+          ACCREDITED INVESTOR EXCHANGE • GOOGLE OAUTH 2.0
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight leading-[1.08]">
+          INVESTASI TRANCHE<br/>INVENTARIS B2B<br/>DENGAN CAP 1.6X
+        </h1>
+        <p class="text-sm text-[var(--aero-muted)] leading-relaxed max-w-lg">
+          Pantau perputaran stok bahan baku dan kasir POS UMKM secara real-time melalui audit Mass-Balance sebelum menyuntikkan modal kerja ke rekening Dual-Approval Escrow.
+        </p>
+        <button onclick="NusaCore.openOAuthModal('INVESTOR', () => checkInvestorSession())" class="aero-btn-olive px-7 py-4 rounded-full text-xs sm:text-sm font-extrabold inline-flex items-center gap-3 shadow-sm">
+          <span>G</span>
+          <span>Masuk dengan Google OAuth 2.0 (Investor) →</span>
+        </button>
+      </div>
+
+      <div class="lg:col-span-6">
+        <div class="aero-surface rounded-[30px] p-6 sm:p-8 shadow-sm space-y-5">
+          <h2 class="text-base font-extrabold uppercase border-b border-[var(--aero-border)] pb-3">
+            Login Institusi / Angel Investor
+          </h2>
+          <form onsubmit="handleInvestorLogin(event)" class="space-y-4">
+            <input id="invLoginEmail" type="email" required value="invest@sovereign-impact.id" class="w-full px-4 py-3 rounded-full aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="invLoginPass" type="password" required value="investor123" class="w-full px-4 py-3 rounded-full aero-stone-soft text-xs font-medium focus:outline-none" />
+            <button type="submit" class="w-full py-3.5 rounded-full aero-btn-olive text-xs font-extrabold">
+              Buka Terminal Investasi NusaBit →
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTECTED INVESTOR WORKSPACE -->
+  <div id="investorProtectedTerminal" class="hidden space-y-6">
+
+    <!-- 2. HERO BANNER SELECTED EMITEN (AERO STEP STYLE) -->
+    <div id="investorHeroMount"></div>
+
+    <!-- 3. EMITEN CARDS SHOWCASE GRID -->
+    <section id="emitenGridSection" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base sm:text-lg font-extrabold uppercase tracking-wider">PILIH EMITEN INVENTARIS UMKM UNTUK ANALISIS & PENDANAAN</h2>
+        <span class="text-xs font-mono-num text-[var(--aero-muted)]">Klik Kartu untuk Memilih Emiten</span>
+      </div>
+      <div id="emitenCardsMount" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- 4. FUNDAMENTAL TELEMETRY & ORDER EXECUTION WORKSPACE -->
+    <section id="orderPanelSection" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="grid lg:grid-cols-12 gap-6">
+
+        <!-- Left 7 Cols: 6-Month Revenue Chart & Mass-Balance Audit -->
+        <div class="lg:col-span-7 aero-surface rounded-[32px] p-6 sm:p-8 shadow-sm space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--aero-border)] pb-4">
+            <div>
+              <span id="detTicker" class="px-3 py-1 rounded-full aero-stone font-mono-num text-xs font-extrabold">$ROTI-SKH</span>
+              <h3 id="detName" class="text-xl font-extrabold uppercase mt-2">Roti Warisan Nusantara</h3>
+              <p id="detSub" class="text-xs text-[var(--aero-muted)]"></p>
+            </div>
+            <div class="text-right font-mono-num">
+              <span id="detAuditBadge" class="px-3 py-1 rounded-full text-xs font-extrabold"></span>
+              <p id="detYield" class="text-2xl font-extrabold text-[var(--aero-olive)] mt-1">+19.8% p.a.</p>
+            </div>
+          </div>
+
+          <div class="aero-stone-soft rounded-[24px] p-5 space-y-3">
+            <div class="flex justify-between text-xs font-bold">
+              <span>Pertumbuhan Omzet Bulanan (6 Bulan Terakhir)</span>
+              <span id="detStage" class="font-mono-num text-[var(--aero-olive)]"></span>
+            </div>
+            <div id="revChartBars" class="grid grid-cols-6 gap-3 items-end h-36 pt-6 px-2"></div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="aero-stone-soft rounded-2xl p-4 space-y-2">
+              <div class="flex justify-between text-xs font-bold">
+                <span>Progres Redeemable Cap (1.6x)</span>
+                <span id="detCapPct" class="font-mono-num">0%</span>
+              </div>
+              <div class="w-full h-2 bg-black/10 rounded-full overflow-hidden">
+                <div id="detCapBar" class="aero-btn-olive h-full rounded-full" style="width: 0%"></div>
+              </div>
+              <p id="detCapText" class="text-[11px] text-[var(--aero-muted)]"></p>
+            </div>
+
+            <div class="aero-stone-soft rounded-2xl p-4 space-y-1.5">
+              <div class="flex justify-between text-xs font-bold">
+                <span>Audit Fisik Mass-Balance</span>
+                <span id="detMbGap" class="font-mono-num"></span>
+              </div>
+              <p id="detMbFormula" class="text-[11px] font-mono-num text-[var(--aero-muted)]"></p>
+              <p id="detRiskNote" class="text-[11px] text-[var(--aero-muted)]"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 Cols: Tranche Allocation Form & Live Trade Stream -->
+        <div class="lg:col-span-5 aero-surface rounded-[32px] p-6 sm:p-8 shadow-sm space-y-5">
+          <div class="border-b border-[var(--aero-border)] pb-4">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-[var(--aero-muted)]">DIRECT ESCROW FUNDING</span>
+            <h3 class="text-lg font-extrabold uppercase mt-0.5">Alokasi Lot Tranche Inventaris UMKM</h3>
+          </div>
+
+          <form onsubmit="handleInvestorBuy(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3 text-xs font-mono-num aero-stone-soft p-4 rounded-2xl">
+              <div>Emiten: <b id="ordTicker">$ROTI-SKH</b></div>
+              <div>Tersedia: <b id="ordAvailLots">420 Lot</b></div>
+              <div>Harga/Lot: <b id="ordUnitPrice">Rp 250.000</b></div>
+              <div>Bagi Hasil: <b>25% Laba</b></div>
+            </div>
+
+            <input id="invNameInput" type="text" readonly class="w-full px-4 py-3 rounded-full aero-stone-soft text-xs font-bold" />
+
+            <div>
+              <label class="block text-xs font-bold mb-1.5">Jumlah Lot Tranche yang Dibeli</label>
+              <input id="invLotInput" type="number" min="1" max="500" value="20" oninput="updateOrderPreview()" class="w-full px-4 py-3 rounded-full aero-stone-soft font-mono-num text-base font-extrabold focus:outline-none" />
+            </div>
+
+            <div class="p-4 rounded-2xl aero-stone text-xs font-mono-num space-y-1">
+              <div class="flex justify-between">
+                <span>Total Suntikan Modal:</span>
+                <span id="ordTotalValue" class="font-extrabold">Rp 5.000.000</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Target Akumulasi Return (1.6x):</span>
+                <span id="ordTargetCap" class="font-extrabold">Rp 8.000.000</span>
+              </div>
+            </div>
+
+            <button id="btnBuyTranche" type="submit" class="w-full py-4 rounded-full aero-btn-olive text-xs font-extrabold uppercase tracking-wider shadow-sm">
+              Suntik Dana ke Dual-Approval Escrow →
+            </button>
+          </form>
+
+          <div class="pt-3 border-t border-[var(--aero-border)] space-y-2">
+            <p class="text-[11px] font-extrabold uppercase text-[var(--aero-muted)]">Riwayat Pendanaan Masuk:</p>
+            <div id="liveTradesList" class="space-y-2 max-h-40 overflow-y-auto"></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <div id="footerMount"></div>
+
+  <script>
+    let selectedTicker = 'ROTI-SKH';
+
+    function handleInvestorLogin(e) {
+      e.preventDefault();
+      try {
+        NusaCore.loginUser(
+          document.getElementById('invLoginEmail').value,
+          document.getElementById('invLoginPass').value,
+          'INVESTOR'
+        );
+        checkInvestorSession();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    function checkInvestorSession() {
+      const session = NusaCore.getSession('INVESTOR') || NusaCore.getSession('ACTIVE_USER');
+      const gate = document.getElementById('investorAuthGate');
+      const term = document.getElementById('investorProtectedTerminal');
+      const state = NusaCore.getState();
+
+      document.getElementById('headerMount').innerHTML = NusaBlackBoxUI.renderHeader({
+        brandTitle: 'AERO STEP',
+        brandSub: 'NUSABIT INVESTOR TERMINAL',
+        navItems: [
+          { label: 'Portofolio Emiten', href: '#emitenGridSection' },
+          { label: 'Analisis Fundamental', href: '#orderPanelSection' },
+          { label: 'Eksekusi Tranche', href: '#orderPanelSection' }
+        ],
+        user: session,
+        badgeLabel: 'Trades',
+        badgeCount: state.investorTrades.length,
+        onLoginClick: "NusaCore.openOAuthModal('INVESTOR', () => checkInvestorSession())",
+        onBadgeClick: '#orderPanelSection'
+      });
+
+      if (session) {
+        gate.classList.add('hidden');
+        term.classList.remove('hidden');
+        document.getElementById('invNameInput').value = session.name;
+        renderInvestorTerminal();
+      } else {
+        gate.classList.remove('hidden');
+        term.classList.add('hidden');
+      }
+      document.getElementById('footerMount').innerHTML = NusaBlackBoxUI.renderFooter('AERO STEP • NUSABIT EXCHANGE');
+    }
+
+    function selectTicker(t) {
+      selectedTicker = t;
+      renderInvestorTerminal();
+    }
+
+    function updateOrderPreview() {
+      const state = NusaCore.getState();
+      const umkm = state.umkmList.find(u => u.ticker === selectedTicker) || state.umkmList[0];
+      const lots = Number(document.getElementById('invLotInput').value) || 0;
+      const total = lots * umkm.unitPriceLot;
+      document.getElementById('ordTotalValue').textContent = NusaCore.formatIDR(total);
+      document.getElementById('ordTargetCap').textContent = NusaCore.formatIDR(total * 1.6);
+    }
+
+    function renderInvestorTerminal() {
+      const state = NusaCore.getState();
+      const umkm = state.umkmList.find(u => u.ticker === selectedTicker) || state.umkmList[0];
+      const mb = NusaCore.calculateMassBalance(umkm.massBalance);
+      const grad = NusaCore.calculateGraduationProgress(umkm);
+
+      document.getElementById('investorHeroMount').innerHTML = NusaBlackBoxUI.renderHeroBanner({
+        badge: `EMITEN AKTIF • $${umkm.ticker} • ${umkm.location.toUpperCase()}`,
+        titleLines: [
+          umkm.name.toUpperCase(),
+          `YIELD +${umkm.yieldAnnualized}% P.A.`,
+          `REDEEMABLE CAP 1.6X`
+        ],
+        subtitle: `${umkm.owner} — ${umkm.stage}. Seluruh modal kerja dikunci pada rekening Dual-Approval Escrow untuk pengadaan inventaris produktif.`,
+        primaryCta: { label: 'Suntik Modal Tranche', href: '#orderPanelSection' },
+        secondaryCta: { label: 'Pilih Emiten Lain', href: '#emitenGridSection' },
+        heroImage: umkm.image,
+        floatingPerks: [
+          { icon: '📈', title: 'Omzet Bulanan', sub: NusaCore.formatCompactIDR(umkm.monthlyRevenue) },
+          { icon: '💰', title: 'Laba Bersih / Bln', sub: NusaCore.formatCompactIDR(umkm.monthlyNetProfit) },
+          { icon: '🚢', title: 'DP Buyer Pool (OPM)', sub: NusaCore.formatCompactIDR(state.meta.exportPoolDP) }
+        ],
+        socialProof: { countText: `Sisa Kuota: ${umkm.availableLots} Lot`, rating: mb.isAlert ? '3.8' : '4.9' }
+      });
+
+      document.getElementById('emitenCardsMount').innerHTML = state.umkmList
+        .map(u => {
+          const m = NusaCore.calculateMassBalance(u.massBalance);
+          return NusaBlackBoxUI.renderInventoryCard({
+            id: u.id,
+            title: `$${u.ticker} — ${u.name}`,
+            subtitle: `${u.sector} • HPP -${u.hppReductionPct}%`,
+            priceFormatted: NusaCore.formatIDR(u.unitPriceLot),
+            oldPriceFormatted: '',
+            rating: m.isAlert ? 'HOLD' : `${u.yieldAnnualized}%`,
+            unitBadge: `${u.availableLots} LOT`,
+            tag: m.isAlert ? 'FROZEN >3%' : `CAP ${NusaCore.calculateGraduationProgress(u).progressPct}%`,
+            tagType: m.isAlert ? 'DISCOUNT' : 'NEW',
+            image: u.image,
+            actionLabel: 'Pilih Emiten',
+            onActionClick: `selectTicker('${u.ticker}')`
+          });
+        })
+        .join('');
+
+      document.getElementById('detTicker').textContent = `$${umkm.ticker}`;
+      document.getElementById('detName').textContent = umkm.name;
+      document.getElementById('detSub').textContent = `${umkm.owner} • ${umkm.sector} • ${umkm.location}`;
+      document.getElementById('detYield').textContent = `+${umkm.yieldAnnualized}% p.a.`;
+      document.getElementById('detStage').textContent = umkm.stage;
+
+      const auditBadge = document.getElementById('detAuditBadge');
+      auditBadge.textContent = mb.isAlert ? `FROZEN (GAP ${mb.discrepancyPct}%)` : `VERIFIED (${mb.discrepancyPct}% GAP)`;
+      auditBadge.className = mb.isAlert
+        ? 'px-3 py-1 rounded-full text-xs font-extrabold bg-rose-500/20 text-rose-500'
+        : 'px-3 py-1 rounded-full text-xs font-extrabold aero-stone';
+
+      const maxVal = Math.max(...umkm.financialHistory, 250);
+      const months = ['Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt'];
+      document.getElementById('revChartBars').innerHTML = umkm.financialHistory
+        .map((val, idx) => {
+          const hPct = Math.max(20, Math.round((val / maxVal) * 100));
+          return `
+          <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+            <span class="text-[10px] font-mono-num font-extrabold">${val}Jt</span>
+            <div class="w-full rounded-t-xl aero-btn-olive" style="height: ${hPct}%"></div>
+            <span class="text-[10px] text-[var(--aero-muted)] font-mono-num">${months[idx]}</span>
+          </div>
+        `;
+        })
+        .join('');
+
+      document.getElementById('detCapPct').textContent = `${grad.progressPct}%`;
+      document.getElementById('detCapBar').style.width = `${grad.progressPct}%`;
+      document.getElementById('detCapText').textContent =
+        `Terkumpul ${NusaCore.formatCompactIDR(umkm.returnedToInvestor)} dari Cap 1.6x (${NusaCore.formatCompactIDR(grad.targetCapAmount)}).`;
+
+      document.getElementById('detMbGap').textContent = `Gap: ${mb.unaccountedGap} unit (${mb.discrepancyPct}%)`;
+      document.getElementById('detMbFormula').textContent =
+        `Input ${mb.input} - (POS ${umkm.massBalance.posSalesUnits} + Stok ${umkm.massBalance.warehouseStockUnits} + Reject ${umkm.massBalance.verifiedRejectUnits})`;
+      document.getElementById('detRiskNote').textContent = umkm.riskNote;
+
+      document.getElementById('ordTicker').textContent = `$${umkm.ticker}`;
+      document.getElementById('ordAvailLots').textContent = `${umkm.availableLots} Lot`;
+      document.getElementById('ordUnitPrice').textContent = NusaCore.formatIDR(umkm.unitPriceLot);
+
+      const btn = document.getElementById('btnBuyTranche');
+      if (mb.isAlert) {
+        btn.disabled = true;
+        btn.textContent = 'PERDAGANGAN DIBEKUKAN (AUDIT MASS-BALANCE)';
+        btn.className = 'w-full py-4 rounded-full bg-rose-900 text-white text-xs font-extrabold uppercase cursor-not-allowed';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Suntik Dana ke Dual-Approval Escrow →';
+        btn.className = 'w-full py-4 rounded-full aero-btn-olive text-xs font-extrabold uppercase tracking-wider shadow-sm';
+      }
+      updateOrderPreview();
+
+      document.getElementById('liveTradesList').innerHTML = state.investorTrades
+        .map(
+          t => `
+        <div class="p-3 rounded-2xl aero-stone-soft flex items-center justify-between text-xs font-mono-num">
+          <div>
+            <span class="font-extrabold">$${t.ticker}</span> • ${t.lots} Lot
+            <p class="text-[10px] text-[var(--aero-muted)]">${t.investorName}</p>
+          </div>
+          <div class="text-right">
+            <p class="font-extrabold">${NusaCore.formatIDR(t.totalValue)}</p>
+            <p class="text-[10px] text-[var(--aero-muted)]">${t.timestamp}</p>
+          </div>
+        </div>
+      `
+        )
+        .join('');
+    }
+
+    function handleInvestorBuy(e) {
+      e.preventDefault();
+      try {
+        const lots = Number(document.getElementById('invLotInput').value);
+        const invName = document.getElementById('invNameInput').value;
+        const trade = NusaCore.investInUMKM(selectedTicker, lots, invName);
+        renderInvestorTerminal();
+        alert(`Investasi Berhasil! ${trade.lots} Lot ($${trade.ticker}) senilai ${NusaCore.formatIDR(trade.totalValue)} telah masuk ke Dual-Approval Escrow.`);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      NusaCore.applyTheme('light');
+      checkInvestorSession();
+      NusaCore.onUpdate(() => {
+        if (NusaCore.getSession('INVESTOR') || NusaCore.getSession('ACTIVE_USER')) renderInvestorTerminal();
+      });
+    });
+  </script>
+</body>
+</html>

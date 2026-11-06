@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NUSA STEP B2B — Ekosistem Manajemen Inventaris & Venture Builder UMKM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="nusa-core.js"></script>
+</head>
+<body class="antialiased">
+
+  <!-- 1. BLACK-BOX HEADER -->
+  <div id="headerMount"></div>
+
+  <!-- 2. BLACK-BOX HERO BANNER (IDENTICAL TO AERO STEP LAYOUT) -->
+  <div id="heroMount"></div>
+
+  <!-- 3. BLACK-BOX SEARCH & CATEGORY FILTER PILL BAR -->
+  <div id="searchBarMount"></div>
+
+  <!-- 4. 5-COLUMN B2B INVENTORY / PRODUCT SHOWCASE ("ХИТЫ ПРОДАЖ" EQUIVALENT) -->
+  <section id="katalog" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-base sm:text-lg font-extrabold uppercase tracking-wider">KATALOG INVENTARIS B2B & EMITEN UNGGULAN</h2>
+      <a href="#daftar" class="text-xs font-bold text-[var(--aero-muted)] hover:text-[var(--aero-text)] transition">
+        Lihat Seluruh SKU →
+      </a>
+    </div>
+    <div id="inventoryGridMount" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+  </section>
+
+  <!-- 5. 2x2 BENTO CATEGORY GRID (БЕГ / БАСКЕТБОЛ / ТРЕНИНГ / ЛАЙФСТАЙЛ EQUIVALENT) -->
+  <div id="bentoMount"></div>
+
+  <!-- 6. 6-COLUMN TECHNOLOGY PILLARS ("ТЕХНОЛОГИИ ДЛЯ ТВОЕГО ДВИЖЕНИЯ" EQUIVALENT) -->
+  <div id="techPillarsMount"></div>
+
+  <!-- 7. INTERACTIVE REDEEMABLE 1.6X CAP SIMULATOR -->
+  <section id="simulasi" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div class="aero-surface rounded-[32px] p-6 sm:p-10 shadow-sm grid lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-5 space-y-3">
+        <span class="px-3.5 py-1 rounded-full aero-stone text-[10px] font-extrabold uppercase tracking-wider">
+          Kalkulator Transparansi 1.6x Cap
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight">
+          Simulasi Lulus Mandiri Tanpa Kehilangan Saham Warisan
+        </h2>
+        <p class="text-xs sm:text-sm text-[var(--aero-muted)] leading-relaxed">
+          Geser kebutuhan modal kerja inventaris dan estimasi laba bersih bulanan setelah pemangkasan HPP B2B. Kontrak otomatis selesai saat bagi hasil mencapai 1.6x modal.
+        </p>
+      </div>
+
+      <div class="lg:col-span-7 aero-stone-soft rounded-[26px] p-6 space-y-5">
+        <div>
+          <div class="flex justify-between text-xs sm:text-sm font-bold mb-2">
+            <span>Kebutuhan Modal Kerja & Inventaris (Tranche 1–3):</span>
+            <span id="simCapitalLabel" class="font-mono-num font-extrabold">Rp 250.000.000</span>
+          </div>
+          <input id="simCapitalInput" type="range" min="50000000" max="1000000000" step="25000000" value="250000000" class="w-full accent-[#52584E] cursor-pointer" oninput="updateSimulator()">
+        </div>
+
+        <div>
+          <div class="flex justify-between text-xs sm:text-sm font-bold mb-2">
+            <span>Estimasi Laba Bersih Bulanan (Setelah Efisiensi HPP B2B):</span>
+            <span id="simProfitLabel" class="font-mono-num font-extrabold">Rp 45.000.000 / bln</span>
+          </div>
+          <input id="simProfitInput" type="range" min="10000000" max="200000000" step="5000000" value="45000000" class="w-full accent-[#52584E] cursor-pointer" oninput="updateSimulator()">
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-3 pt-2">
+          <div class="aero-surface p-4 rounded-2xl">
+            <p class="text-[11px] text-[var(--aero-muted)]">Target Cap Maksimal (1.6x)</p>
+            <p id="simCapTotal" class="text-base font-extrabold font-mono-num mt-1">Rp 400.000.000</p>
+          </div>
+          <div class="aero-surface p-4 rounded-2xl">
+            <p class="text-[11px] text-[var(--aero-muted)]">Setoran Bagi Hasil (25%)</p>
+            <p id="simMonthlyShare" class="text-base font-extrabold font-mono-num mt-1">Rp 11.250.000 / bln</p>
+          </div>
+          <div class="aero-btn-olive p-4 rounded-2xl">
+            <p class="text-[11px] opacity-80">Estimasi Lulus 100% Mandiri</p>
+            <p id="simMonthsToGrad" class="text-base font-extrabold font-mono-num mt-1">35,6 Bulan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 3D METALLIC CARD LOYALTY / B2B CLUB BANNER ("AERO STEP CLUB" EQUIVALENT) -->
+  <div id="clubBannerMount"></div>
+
+  <!-- 9. BANK-GRADE KYB & PARTNERSHIP APPLICATION FORM -->
+  <section id="daftar" class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="aero-surface rounded-[34px] p-6 sm:p-10 shadow-sm space-y-8">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--aero-border)] pb-5">
+        <div>
+          <span class="px-3.5 py-1 rounded-full aero-stone text-[10px] font-extrabold uppercase tracking-wider">
+            Formulir Standar Analis Kredit Perbankan & KYB Korporasi
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight mt-2">
+            Pendaftaran Mitra UMKM & Pembukaan Akun Inventaris B2B
+          </h2>
+        </div>
+        <button type="button" onclick="NusaCore.openOAuthModal('MITRA')" class="aero-pill-outline px-5 py-2.5 rounded-full text-xs font-extrabold flex items-center gap-2">
+          <span>🔗</span>
+          <span>Hubungkan Cepat via Google OAuth</span>
+        </button>
+      </div>
+
+      <form id="umkmRegForm" class="space-y-7" onsubmit="handleUMKMRegistration(event)">
+        <!-- Bagian A: KYC Pengurus -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--aero-olive)]">A. Identitas Pengurus Utama (KYC)</h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <input id="regOwnerName" type="text" required placeholder="Nama Lengkap Sesuai KTP *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="regOwnerNik" type="text" required minlength="16" maxlength="16" placeholder="NIK KTP 16 Digit *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <input id="regOwnerAge" type="number" required min="18" max="85" placeholder="Usia Pemilik (Thn) *" value="42" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <input id="regOwnerPhone" type="tel" required placeholder="Nomor WhatsApp Aktif *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <input id="regOwnerNpwp" type="text" required placeholder="NPWP Pribadi Pengurus *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <input id="regEmergencyContact" type="text" required placeholder="Kontak Darurat Keluarga *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Bagian B: Legalitas & Gudang Inventaris -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--aero-olive)]">B. Legalitas Badan Usaha & Kapasitas Gudang (KYB)</h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <input id="regBizName" type="text" required placeholder="Nama Brand / Merek UMKM *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <select id="regLegalType" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-bold focus:outline-none">
+              <option value="PT Perorangan / PT Umum">PT Perorangan / PT Umum</option>
+              <option value="CV (Commanditaire Vennootschap)">CV (Commanditaire Vennootschap)</option>
+              <option value="UD Terdaftar">UD (Usaha Dagang) Terdaftar</option>
+              <option value="Koperasi Produksi">Koperasi Produksi</option>
+            </select>
+            <input id="regNib" type="text" required placeholder="Nomor Induk Berusaha (NIB OSS) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <input id="regBizNpwp" type="text" required placeholder="NPWP Badan Usaha *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num focus:outline-none" />
+            <select id="regSector" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-bold focus:outline-none">
+              <option value="F&B Bakery & Pengolahan Pangan">F&B Bakery & Pengolahan Pangan</option>
+              <option value="Agro-Processing & Komoditas Ekspor">Agro-Processing & Kopi/Rempah</option>
+              <option value="CleanTech, Bio-Briquette & Biomassa">CleanTech & Bio-Energi</option>
+              <option value="Kemasan Ramah Lingkungan & Manufaktur">Kemasan & Manufaktur B2B</option>
+            </select>
+            <input id="regLocation" type="text" required placeholder="Kota / Kabupaten Operasional *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="regCertifications" type="text" required placeholder="Sertifikasi (PIRT, Halal, BPOM, SVLK) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+            <input id="regFullAddress" type="text" required placeholder="Alamat Lengkap Lokasi Pabrik & Gudang *" class="sm:col-span-2 px-4 py-3 rounded-2xl aero-stone-soft text-xs font-medium focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- Bagian C: Data Perbankan & Finansial -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--aero-olive)]">C. Rekening Perbankan, Rasio HPP & SLIK OJK</h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <select id="regBankName" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-bold">
+              <option value="Bank Mandiri">Bank Mandiri</option>
+              <option value="BRI">BRI</option>
+              <option value="BCA">BCA</option>
+              <option value="BNI">BNI</option>
+              <option value="BSI">BSI</option>
+            </select>
+            <input id="regBankAccNo" type="text" required placeholder="Nomor Rekening Usaha *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num" />
+            <input id="regBankHolder" type="text" required placeholder="Atas Nama Rekening *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs" />
+            <select id="regSlikStatus" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-bold">
+              <option value="Kolektibilitas 1 (Lancar)">SLIK OJK Kol 1 (Lancar)</option>
+              <option value="Belum Pernah Pinjam Bank">Belum Pernah Pinjam Bank</option>
+              <option value="Kolektibilitas 2 (DPK)">SLIK OJK Kol 2 (DPK)</option>
+            </select>
+            <input id="regRevenue" type="number" required value="55000000" min="5000000" placeholder="Omzet / Bulan (Rp) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num" />
+            <input id="regNetProfit" type="number" required value="15000000" min="1000000" placeholder="Laba Bersih / Bln (Rp) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num" />
+            <input id="regCapital" type="number" required value="175000000" step="10000000" placeholder="Modal Diajukan (Rp) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num font-bold" />
+            <input id="regExportMoq" type="number" required value="2500" placeholder="Kapasitas Ekspor (Pack/Bln) *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs font-mono-num" />
+          </div>
+        </div>
+
+        <!-- Bagian D: Rencana Tranche & Akun Login -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-[var(--aero-olive)]">D. Rencana Tranche Inventaris & Kredensial Akun Mitra</h3>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <input id="regTranchePlan" type="text" required placeholder="Alokasi Tranche 1, 2, 3 *" value="T1: Bahan Baku B2B | T2: Kemasan QR | T3: Ekspor" class="sm:col-span-2 px-4 py-3 rounded-2xl aero-stone-soft text-xs" />
+            <input id="regOwnerEmail" type="email" required placeholder="Email Login Mitra / Google *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs" />
+            <input id="regAccountPassword" type="password" required minlength="6" placeholder="Kata Sandi Baru *" class="px-4 py-3 rounded-2xl aero-stone-soft text-xs" />
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+          <label class="flex items-center gap-2.5 text-xs text-[var(--aero-muted)] cursor-pointer">
+            <input type="checkbox" required checked class="accent-[#52584E] w-4 h-4" />
+            <span>Setuju dengan Pakta Ring-Fencing (Tanpa Agunan Pribadi), Pelatihan Wajib, & Audit Mass-Balance 3.0%.</span>
+          </label>
+          <button type="submit" class="aero-btn-olive px-8 py-4 rounded-full text-xs sm:text-sm font-extrabold shadow-sm">
+            Kirim Berkas KYB & Aktifkan Akun Mitra →
+          </button>
+        </div>
+      </form>
+
+      <div id="regSuccessBanner" class="hidden p-5 rounded-2xl aero-stone border border-[var(--aero-border)]">
+        <p class="text-xs font-extrabold uppercase text-[var(--aero-olive)]">✓ Berkas KYB & Akun Inventaris Mitra Berhasil Dihimpun</p>
+        <p id="regSuccessTitle" class="text-sm font-bold mt-1"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. BLACK-BOX FOOTER -->
+  <div id="footerMount"></div>
+
+  <script>
+    let currentCategory = 'ALL';
+    let currentSearch = '';
+
+    function updateSimulator() {
+      const cap = Number(document.getElementById('simCapitalInput').value);
+      const profit = Number(document.getElementById('simProfitInput').value);
+      const targetCap = cap * 1.6;
+      const monthlyShare = profit * 0.25;
+      const months = targetCap / monthlyShare;
+
+      document.getElementById('simCapitalLabel').textContent = NusaCore.formatIDR(cap);
+      document.getElementById('simProfitLabel').textContent = NusaCore.formatIDR(profit) + ' / bln';
+      document.getElementById('simCapTotal').textContent = NusaCore.formatIDR(targetCap);
+      document.getElementById('simMonthlyShare').textContent = NusaCore.formatIDR(monthlyShare) + ' / bln';
+      document.getElementById('simMonthsToGrad').textContent = months.toFixed(1) + ' Bulan';
+    }
+
+    function handleSelectCategory(catId) {
+      currentCategory = catId;
+      renderPublicView();
+    }
+
+    function handleSearchCatalog() {
+      const el = document.getElementById('publicSearchInput');
+      currentSearch = el ? el.value.trim().toLowerCase() : '';
+      renderInventoryCardsOnly();
+    }
+
+    function renderInventoryCardsOnly() {
+      const state = NusaCore.getState();
+      const filtered = state.b2bCatalog.filter(item => {
+        const matchCat = currentCategory === 'ALL' || item.categoryCode === currentCategory;
+        const matchQ =
+          !currentSearch ||
+          item.itemName.toLowerCase().includes(currentSearch) ||
+          item.subtitle.toLowerCase().includes(currentSearch) ||
+          item.supplierName.toLowerCase().includes(currentSearch);
+        return matchCat && matchQ;
+      });
+
+      document.getElementById('inventoryGridMount').innerHTML = filtered
+        .map(item =>
+          NusaBlackBoxUI.renderInventoryCard({
+            id: item.id,
+            title: item.itemName,
+            subtitle: `${item.supplierName} • Stok: ${item.stock}`,
+            priceFormatted: NusaCore.formatIDR(item.ecosystemCreditPrice),
+            oldPriceFormatted: NusaCore.formatIDR(item.marketPrice),
+            rating: item.rating,
+            unitBadge: item.unitBadge,
+            tag: item.tag,
+            tagType: item.tagType,
+            image: item.image,
+            actionLabel: 'Detail SKU',
+            onActionClick: `alert('SKU ${item.sku}: ${item.itemName} tersedia ${item.stock} lot di jaringan B2B NusaVenture.')`
+          })
+        )
+        .join('');
+    }
+
+    function renderPublicView() {
+      const state = NusaCore.getState();
+      const activeUser = NusaCore.getSession('ACTIVE_USER');
+
+      document.getElementById('headerMount').innerHTML = NusaBlackBoxUI.renderHeader({
+        brandTitle: 'AERO STEP',
+        brandSub: 'NUSA B2B INVENTORY',
+        navItems: [
+          { label: 'Katalog B2B', href: '#katalog' },
+          { label: 'Kategori Rantai Pasok', href: '#bentoMount' },
+          { label: 'Teknologi Audit', href: '#techPillarsMount' },
+          { label: 'Simulasi 1.6x', href: '#simulasi' },
+          { label: 'Pendaftaran KYB', href: '#daftar' }
+        ],
+        user: activeUser,
+        badgeLabel: 'SKU Aktif',
+        badgeCount: state.b2bCatalog.length,
+        onLoginClick: "NusaCore.openOAuthModal('MITRA')",
+        onBadgeClick: '#katalog'
+      });
+
+      document.getElementById('heroMount').innerHTML = NusaBlackBoxUI.renderHeroBanner({
+        badge: 'MANAJEMEN INVENTARIS B2B & VENTURE BUILDER',
+        titleLines: [
+          'RANTAI PASOK B2B',
+          'UNTUK RITME,',
+          'EFISIENSI HPP, DAN',
+          'EKSPOR GLOBAL'
+        ],
+        subtitle: `Total Dana Kelolaan ${NusaCore.formatCompactIDR(state.meta.totalAUM)} dengan Volume B2B Sirkular ${NusaCore.formatCompactIDR(state.meta.activeB2BCreditVolume)} tanpa tengkulak.`,
+        primaryCta: { label: 'Jelajahi Katalog B2B', href: '#katalog' },
+        secondaryCta: { label: 'Daftar KYB Mitra', href: '#daftar' },
+        heroImage: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1000&auto=format&fit=crop&q=80',
+        floatingPerks: [
+          { icon: '📦', title: 'Potong HPP 15%–30%', sub: 'Pasokan B2B langsung antar-mitra' },
+          { icon: '🛡️', title: 'Zero Agunan Pribadi', sub: '100% Ring-Fenced Asset Protection' },
+          { icon: '🚢', title: 'DP Buyer Ekspor 50%', sub: `Pool Aktif: ${NusaCore.formatCompactIDR(state.meta.exportPoolDP)}` }
+        ],
+        socialProof: { countText: '22.200 / 25.000 Pack Ekspor', rating: '4.9' }
+      });
+
+      document.getElementById('searchBarMount').innerHTML = NusaBlackBoxUI.renderSearchAndCategoryBar({
+        searchId: 'publicSearchInput',
+        onSearchInput: 'handleSearchCatalog()',
+        activeCategory: currentCategory,
+        onCategoryClick: 'handleSelectCategory'
+      });
+
+      renderInventoryCardsOnly();
+
+      document.getElementById('bentoMount').innerHTML = NusaBlackBoxUI.renderBentoGrid([
+        {
+          title: 'HULU: BAHAN BAKU PERTANIAN & PANGAN',
+          desc: 'Pasokan gandum, kopi spesialti, dan tepung singkong fermentasi langsung dari koperasi tani tanpa distributor.',
+          linkText: 'Filter Bahan Baku',
+          href: '#katalog',
+          image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80'
+        },
+        {
+          title: 'TENGAH: BIO-ENERGI & SEWA MESIN IDLE',
+          desc: 'Briket bio-energi kalori tinggi dan pemanfaatan kapasitas mesin oven/mixer shift malam antar-pabrik UMKM.',
+          linkText: 'Lihat Kapasitas Mesin',
+          href: '#katalog',
+          image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&auto=format&fit=crop&q=80'
+        },
+        {
+          title: 'HILIR: KEMASAN STANDAR EKSPOR & QR',
+          desc: 'Kemasan food-grade dengan kode QR berurutan yang terhubung langsung ke mesin audit Mass-Balance.',
+          linkText: 'Pesan Kemasan QR',
+          href: '#katalog',
+          image: 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=600&auto=format&fit=crop&q=80'
+        },
+        {
+          title: 'GLOBAL: AGREGASI KONTAINER OPM 50%',
+          desc: 'Konsolidasi kuota produksi puluhan UMKM untuk memenuhi MOQ buyer Rotterdam & Singapura.',
+          linkText: 'Cek Kuota Ekspor',
+          href: '#simulasi',
+          image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=600&auto=format&fit=crop&q=80'
+        }
+      ]);
+
+      document.getElementById('techPillarsMount').innerHTML = NusaBlackBoxUI.renderTechPillars(
+        'TEKNOLOGI TATA KELOLA & ARSITEKTUR WATERFALL BLACK-BOX',
+        [
+          { icon: '🛡️', title: 'RING-FENCING', desc: 'Bebas agunan rumah atau tanah warisan keluarga.' },
+          { icon: '⚖️', title: 'MASS-BALANCE', desc: 'Audit otomatis Input vs POS + Gudang (batas gap 3.0%).' },
+          { icon: '🔐', title: 'DUAL ESCROW', desc: 'Pencairan modal langsung ke rekening pemasok resmi.' },
+          { icon: '🔄', title: 'B2B CREDIT', desc: 'Barter & transaksi bahan baku internal hemat HPP 30%.' },
+          { icon: '🎓', title: 'NUSA ACADEMY', desc: 'Kurikulum wajib kesiapan pasar sebelum pencairan.' },
+          { icon: '🚀', title: '1.6X GRADUATION', desc: '100% kendali kembali ke pemilik saat cap tercapai.' }
+        ]
+      );
+
+      document.getElementById('clubBannerMount').innerHTML = NusaBlackBoxUI.renderClubBanner({});
+      document.getElementById('footerMount').innerHTML = NusaBlackBoxUI.renderFooter('AERO STEP • NUSA B2B');
+    }
+
+    function handleUMKMRegistration(e) {
+      e.preventDefault();
+      const rev = Number(document.getElementById('regRevenue').value);
+      const netProfit = Number(document.getElementById('regNetProfit').value);
+      const cap = Number(document.getElementById('regCapital').value);
+      const dscrScore = Math.min(98, Math.max(75, Math.round(80 + (netProfit / (cap * 0.04)) * 10)));
+
+      const newApp = NusaCore.registerNewUMKM({
+        ownerName: document.getElementById('regOwnerName').value,
+        ownerNik: document.getElementById('regOwnerNik').value,
+        age: Number(document.getElementById('regOwnerAge').value),
+        ownerPhone: document.getElementById('regOwnerPhone').value,
+        ownerNpwp: document.getElementById('regOwnerNpwp').value,
+        emergencyContact: document.getElementById('regEmergencyContact').value,
+        businessName: document.getElementById('regBizName').value,
+        legalEntityType: document.getElementById('regLegalType').value,
+        nibNumber: document.getElementById('regNib').value,
+        npwpBusiness: document.getElementById('regBizNpwp').value,
+        sector: document.getElementById('regSector').value,
+        location: document.getElementById('regLocation').value,
+        certifications: document.getElementById('regCertifications').value,
+        fullAddress: document.getElementById('regFullAddress').value,
+        bankName: document.getElementById('regBankName').value,
+        bankAccountNo: document.getElementById('regBankAccNo').value,
+        bankAccountHolder: document.getElementById('regBankHolder').value,
+        slikStatus: document.getElementById('regSlikStatus').value,
+        monthlyRevenue: rev,
+        monthlyNetProfit: netProfit,
+        requestedCapital: cap,
+        exportMoqCapacity: Number(document.getElementById('regExportMoq').value),
+        tranchePlan: document.getElementById('regTranchePlan').value,
+        ownerEmail: document.getElementById('regOwnerEmail').value,
+        accountPassword: document.getElementById('regAccountPassword').value,
+        diagnosticScore: dscrScore
+      });
+
+      const banner = document.getElementById('regSuccessBanner');
+      document.getElementById('regSuccessTitle').textContent =
+        `${newApp.businessName} (ID: ${newApp.id}) — Skor Kelayakan KYB: ${newApp.diagnosticScore}/100`;
+      banner.classList.remove('hidden');
+      e.target.reset();
+      renderPublicView();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      NusaCore.applyTheme('light');
+      updateSimulator();
+      renderPublicView();
+      NusaCore.onUpdate(() => renderPublicView());
+    });
+  </script>
+</body>
+</html>
